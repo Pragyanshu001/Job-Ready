@@ -34,6 +34,12 @@ const interviewRouter = require("./routes/interview.routes")
 app.use("/api/auth", authRouter)
 app.use("/api/interview", interviewRouter)
 
-
+// Global Error Handler Middleware
+app.use((err, req, res, next) => {
+    console.error("Global API Error:", err);
+    res.status(err.status || 500).json({
+        message: err.message || "An unexpected server error occurred."
+    });
+});
 
 module.exports = app

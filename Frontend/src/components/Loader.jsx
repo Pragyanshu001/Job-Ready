@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Loader = ({ message = 'Loading...' }) => {
+const Loader = ({ message = 'Loading...', subtitle }) => {
     return (
         <div style={{
             display: 'flex',
@@ -32,6 +32,16 @@ const Loader = ({ message = 'Loading...' }) => {
                 }}>
                     {message}
                 </p>
+                {subtitle && (
+                    <p style={{
+                        margin: '0.5rem 0 0 0',
+                        fontSize: '0.85rem',
+                        color: 'var(--text-secondary)',
+                        fontFamily: 'inherit'
+                    }}>
+                        {subtitle}
+                    </p>
+                )}
             </div>
             <style>{`
                 @keyframes spin {
@@ -44,3 +54,4 @@ const Loader = ({ message = 'Loading...' }) => {
 }
 
 export default Loader
+

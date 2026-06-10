@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { Box, Typography, Button } from '@mui/material'
+import Loader from '../../../components/Loader.jsx'
 
 const Register = () => {
 
@@ -21,19 +22,7 @@ const Register = () => {
     }
 
     if (loading) {
-        return (
-            <Box style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '100vh',
-                backgroundColor: 'var(--bg-color)',
-                color: 'var(--text-primary)',
-                transition: 'all 0.3s ease'
-            }}>
-                <Typography variant="h5" style={{ fontWeight: 'bold' }}>Loading.......</Typography>
-            </Box>
-        )
+        return <Loader message="Creating account..." />
     }
 
     const containerStyle = {

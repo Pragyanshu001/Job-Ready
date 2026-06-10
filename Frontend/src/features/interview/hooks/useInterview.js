@@ -27,7 +27,7 @@ export const useInterview = () => {
             console.log(error)
             const errMsg = error.response?.data?.message || error.message || "Failed to generate report."
             showSnackbar(errMsg, "error")
-            return null
+            throw new Error(errMsg)
         } finally {
             setLoading(false)
         }
