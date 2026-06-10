@@ -20,13 +20,6 @@ const interviewRouter = require("./routes/interview.routes")
 app.use("/api/auth", authRouter)
 app.use("/api/interview", interviewRouter)
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({
-        message: "Internal Server Error",
-        error: err.message
-    });
-});
+
 
 module.exports = app
