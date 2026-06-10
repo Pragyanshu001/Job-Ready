@@ -6,8 +6,22 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "https://job-ready-git-main-pragyanshu001s-projects.vercel.app"
+]
+
 app.use(cors({
-    origin: ["http://localhost:5173", "https://job-ready-git-main-pragyanshu001s-projects.vercel.app"],
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin) || origin.startsWith("http://localhost:")) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 }))
 
