@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
-
-
+import { Box, Typography, Button } from '@mui/material'
+import Navbar from '../../../components/Navbar.jsx'
+import Loader from '../../../components/Loader.jsx'
 
 const NAV_ITEMS = [
     { id: 'technical', label: 'Technical Questions', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>) },
@@ -13,182 +13,573 @@ const NAV_ITEMS = [
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 const QuestionCard = ({ item, index }) => {
-    const [ open, setOpen ] = useState(false)
+    const [open, setOpen] = useState(false)
+
+    const cardStyle = {
+        background: 'var(--qcard-bg)',
+        border: '1px solid var(--divider-color)',
+        borderRadius: '16px',
+        marginBottom: '0.75rem',
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+            borderColor: 'rgba(234, 43, 22, 0.25)',
+            boxShadow: '0 4px 15px rgba(234, 43, 22, 0.05)'
+        }
+    }
+
+    const headerStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        padding: '1.25rem 1rem',
+        cursor: 'pointer',
+        userSelect: 'none'
+    }
+
+    const indexBadgeStyle = {
+        background: 'rgba(234, 43, 22, 0.06)',
+        color: '#ea2b16',
+        border: '1px solid rgba(234, 43, 22, 0.25)',
+        borderRadius: '30px',
+        fontSize: '0.75rem',
+        fontWeight: '700',
+        padding: '0.2rem 0.6rem'
+    }
+
+    const questionTextStyle = {
+        flex: 1,
+        margin: 0,
+        fontSize: '0.9rem',
+        fontWeight: '700',
+        color: 'var(--text-title)',
+        lineHeight: 1.5,
+        transition: 'color 0.3s ease'
+    }
+
+    const chevronStyle = {
+        color: 'var(--text-secondary)',
+        transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+        transition: 'transform 0.2s',
+        display: 'flex',
+        alignItems: 'center'
+    }
+
+    const bodyStyle = {
+        padding: '1.25rem',
+        borderTop: '1px solid var(--divider-color)',
+        background: 'var(--qcard-body-bg)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        transition: 'all 0.3s ease'
+    }
+
+    const sectionStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.4rem'
+    }
+
+    const tagStyle = (type) => ({
+        fontSize: '0.68rem',
+        fontWeight: '700',
+        textTransform: 'uppercase',
+        letterSpacing: '0.06em',
+        padding: '0.2rem 0.6rem',
+        borderRadius: '20px',
+        width: 'fit-content',
+        background: type === 'intention' ? 'rgba(13, 148, 136, 0.06)' : 'rgba(234, 43, 22, 0.06)',
+        border: `1px solid ${type === 'intention' ? 'rgba(13, 148, 136, 0.2)' : 'rgba(234, 43, 22, 0.2)'}`,
+        color: type === 'intention' ? '#0d9488' : '#ea2b16'
+    })
+
+    const bodyTextStyle = {
+        margin: 0,
+        fontSize: '0.835rem',
+        color: 'var(--text-secondary)',
+        lineHeight: 1.6,
+        transition: 'color 0.3s ease'
+    }
+
     return (
-        <div className='q-card'>
-            <div className='q-card__header' onClick={() => setOpen(o => !o)}>
-                <span className='q-card__index'>Q{index + 1}</span>
-                <p className='q-card__question'>{item.question}</p>
-                <span className={`q-card__chevron ${open ? 'q-card__chevron--open' : ''}`}>
+        <Box sx={cardStyle}>
+            <Box sx={headerStyle} onClick={() => setOpen(o => !o)}>
+                <Box component="span" sx={indexBadgeStyle}>Q{index + 1}</Box>
+                <Typography component="p" sx={questionTextStyle}>{item.question}</Typography>
+                <Box component="span" sx={chevronStyle}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
-                </span>
-            </div>
+                </Box>
+            </Box>
             {open && (
-                <div className='q-card__body'>
-                    <div className='q-card__section'>
-                        <span className='q-card__tag q-card__tag--intention'>Intention</span>
-                        <p>{item.intention}</p>
-                    </div>
-                    <div className='q-card__section'>
-                        <span className='q-card__tag q-card__tag--answer'>Model Answer</span>
-                        <p>{item.answer}</p>
-                    </div>
-                </div>
+                <Box sx={bodyStyle}>
+                    <Box sx={sectionStyle}>
+                        <Box component="span" sx={tagStyle('intention')}>Intention</Box>
+                        <Typography component="p" sx={bodyTextStyle}>{item.intention}</Typography>
+                    </Box>
+                    <Box sx={sectionStyle}>
+                        <Box component="span" sx={tagStyle('answer')}>Model Answer</Box>
+                        <Typography component="p" sx={bodyTextStyle}>{item.answer}</Typography>
+                    </Box>
+                </Box>
             )}
-        </div>
+        </Box>
     )
 }
 
-const RoadMapDay = ({ day }) => (
-    <div className='roadmap-day'>
-        <div className='roadmap-day__header'>
-            <span className='roadmap-day__badge'>Day {day.day}</span>
-            <h3 className='roadmap-day__focus'>{day.focus}</h3>
-        </div>
-        <ul className='roadmap-day__tasks'>
-            {day.tasks.map((task, i) => (
-                <li key={i}>
-                    <span className='roadmap-day__bullet' />
-                    {task}
-                </li>
-            ))}
-        </ul>
-    </div>
-)
+const RoadMapDay = ({ day }) => {
+    const cardStyle = {
+        background: 'var(--qcard-bg)',
+        border: '1px solid var(--divider-color)',
+        borderRadius: '16px',
+        padding: '1.25rem',
+        marginBottom: '1rem',
+        boxSizing: 'border-box',
+        transition: 'all 0.3s ease'
+    }
+
+    const headerStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        marginBottom: '0.75rem'
+    }
+
+    const badgeStyle = {
+        background: 'rgba(234, 43, 22, 0.06)',
+        border: '1px solid rgba(234, 43, 22, 0.25)',
+        color: '#ea2b16',
+        fontSize: '0.75rem',
+        fontWeight: '700',
+        padding: '0.2rem 0.6rem',
+        borderRadius: '30px',
+        textTransform: 'uppercase',
+        letterSpacing: '0.03em'
+    }
+
+    const focusStyle = {
+        fontSize: '1rem',
+        fontWeight: '700',
+        color: 'var(--text-title)',
+        margin: 0,
+        transition: 'color 0.3s ease'
+    }
+
+    const listStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem',
+        padding: 0,
+        margin: 0,
+        listStyle: 'none'
+    }
+
+    const itemStyle = {
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '0.6rem',
+        fontSize: '0.85rem',
+        color: 'var(--text-secondary)',
+        lineHeight: 1.5,
+        transition: 'color 0.3s ease'
+    }
+
+    const bulletStyle = {
+        width: '6px',
+        height: '6px',
+        borderRadius: '50%',
+        background: '#ea2b16',
+        marginTop: '6px',
+        flexShrink: 0
+    }
+
+    return (
+        <Box sx={cardStyle}>
+            <Box sx={headerStyle}>
+                <Box component="span" sx={badgeStyle}>Day {day.day}</Box>
+                <Typography component="h3" sx={focusStyle}>{day.focus}</Typography>
+            </Box>
+            <Box component="ul" sx={listStyle}>
+                {day.tasks.map((task, i) => (
+                    <Box component="li" key={i} sx={itemStyle}>
+                        <Box component="span" sx={bulletStyle} />
+                        {task}
+                    </Box>
+                ))}
+            </Box>
+        </Box>
+    )
+}
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const Interview = () => {
-    const [ activeNav, setActiveNav ] = useState('technical')
+    const [activeNav, setActiveNav] = useState('technical')
     const { report, getReportById, loading, getResumePdf } = useInterview()
     const { interviewId } = useParams()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (interviewId) {
             getReportById(interviewId)
         }
-    }, [ interviewId ])
-
-
+    }, [interviewId])
 
     if (loading || !report) {
-        return (
-            <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
-            </main>
-        )
+        return <Loader message="Loading strategy plan..." />
     }
 
-    const scoreColor =
-        report.matchScore >= 80 ? 'score--high' :
-            report.matchScore >= 60 ? 'score--mid' : 'score--low'
+    // Styles for original three-column layout in MUI
+    const pageWrapperStyle = {
+        width: '100%',
+        minHeight: '100vh',
+        background: 'var(--bg-gradient)',
+        color: 'var(--text-primary)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '0rem 0rem 4rem 0rem',
+        boxSizing: 'border-box',
+        fontFamily: '"Outfit", "Inter", system-ui, -apple-system, sans-serif',
+        position: 'relative',
+        overflow: 'visible',
+        transition: 'background-color 0.3s ease, color 0.3s ease'
+    }
 
+    const layoutContainerStyle = {
+        width: '100%',
+        maxWidth: '1100px',
+        background: 'var(--card-bg)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: '1px solid var(--card-border)',
+        borderRadius: '24px',
+        display: 'flex',
+        minHeight: '600px',
+        overflow: 'hidden',
+        boxShadow: 'var(--card-shadow)',
+        flexDirection: { xs: 'column', md: 'row' },
+        zIndex: 1,
+        transition: 'all 0.3s ease'
+    }
+
+    const navPanelStyle = {
+        width: { xs: '100%', md: '240px' },
+        padding: '1.75rem 1.25rem',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        borderRight: { xs: 'none', md: '1px solid var(--divider-color)' },
+        borderBottom: { xs: '1px solid var(--divider-color)', md: 'none' },
+        flexShrink: 0,
+        boxSizing: 'border-box',
+        transition: 'all 0.3s ease'
+    }
+
+    const contentPanelStyle = {
+        flex: 1,
+        padding: '2rem',
+        display: 'flex',
+        flexDirection: 'column',
+        boxSizing: 'border-box',
+        overflowY: 'auto'
+    }
+
+    const rightPanelStyle = {
+        width: { xs: '100%', md: '260px' },
+        padding: '2rem 1.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.75rem',
+        alignItems: 'center',
+        borderLeft: { xs: 'none', md: '1px solid var(--divider-color)' },
+        borderTop: { xs: '1px solid var(--divider-color)', md: 'none' },
+        flexShrink: 0,
+        boxSizing: 'border-box',
+        transition: 'all 0.3s ease'
+    }
+
+    const navLabelStyle = {
+        fontSize: '0.75rem',
+        fontWeight: '700',
+        color: 'var(--text-secondary)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        marginBottom: '0.75rem',
+        paddingLeft: '0.5rem',
+        transition: 'color 0.3s ease'
+    }
+
+    const navButtonStyle = (isActive) => ({
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        padding: '0.75rem 1rem',
+        background: isActive ? 'rgba(234, 43, 22, 0.06)' : 'none',
+        color: isActive ? '#ea2b16' : 'var(--text-secondary)',
+        border: isActive ? '1px solid rgba(234, 43, 22, 0.2)' : '1px solid transparent',
+        borderRadius: '30px',
+        fontSize: '0.85rem',
+        fontWeight: '600',
+        cursor: 'pointer',
+        textTransform: 'none',
+        justifyContent: 'flex-start',
+        marginBottom: '0.5rem',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+            background: 'var(--btn-hover-bg)',
+            color: '#ea2b16'
+        }
+    })
+
+    const downloadButtonStyle = {
+        background: 'var(--btn-bg)',
+        color: 'var(--btn-text)',
+        fontSize: '0.8rem',
+        fontWeight: '800',
+        padding: '0.75rem',
+        borderRadius: '30px',
+        border: 'none',
+        cursor: 'pointer',
+        boxShadow: '0 8px 20px rgba(31, 33, 37, 0.25)',
+        textTransform: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '0.5rem',
+        width: '100%',
+        marginTop: '1.5rem',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+            opacity: 0.95,
+            background: 'var(--text-primary)',
+            boxShadow: '0 10px 25px rgba(31, 33, 37, 0.35)',
+            transform: 'translateY(-1px)'
+        }
+    }
+
+    const contentHeaderStyle = {
+        display: 'flex',
+        alignItems: 'baseline',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid var(--divider-color)',
+        paddingBottom: '1rem',
+        marginBottom: '1.5rem',
+        transition: 'all 0.3s ease'
+    }
+
+    const getScoreColorClass = (score) => {
+        if (score >= 80) return '#10b981' // high
+        if (score >= 60) return '#d97706' // mid
+        return '#ea2b16' // low
+    }
+
+    const scoreCircleStyle = {
+        width: '120px',
+        height: '120px',
+        borderRadius: '50%',
+        border: `5px solid ${getScoreColorClass(report.matchScore)}`,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: '0.5rem 0',
+        background: 'var(--sidebar-score-bg)',
+        boxShadow: `0 0 30px rgba(${report.matchScore >= 80 ? '16,185,129' : report.matchScore >= 60 ? '217,119,6' : '234,43,22'}, 0.15)`,
+        transition: 'all 0.3s ease'
+    }
+
+    const getSeverityStyle = (severity) => {
+        if (severity === 'high') return { border: '1px solid rgba(234, 43, 22, 0.25)', color: '#ea2b16', bg: 'rgba(234, 43, 22, 0.06)' }
+        if (severity === 'medium') return { border: '1px solid rgba(217, 119, 6, 0.25)', color: '#d97706', bg: 'rgba(217, 119, 6, 0.06)' }
+        return { border: '1px solid rgba(16, 185, 129, 0.25)', color: '#10b981', bg: 'rgba(16, 185, 129, 0.06)' }
+    }
+
+    const skillTagStyle = (severity) => {
+        const colors = getSeverityStyle(severity)
+        return {
+            fontSize: '0.7rem',
+            fontWeight: '700',
+            padding: '0.25rem 0.6rem',
+            borderRadius: '20px',
+            backgroundColor: colors.bg,
+            color: colors.color,
+            border: colors.border,
+            textTransform: 'uppercase',
+            letterSpacing: '0.03em'
+        }
+    }
+
+    const panelTitleStyle = {
+        fontSize: '1.15rem',
+        fontWeight: '700',
+        color: 'var(--text-title)',
+        transition: 'color 0.3s ease'
+    }
 
     return (
-        <div className='interview-page'>
-            <div className='interview-layout'>
+        <Box sx={pageWrapperStyle}>
+            {/* Glowing background shapes wrapped to prevent horizontal overflow */}
+            <Box sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                overflow: 'hidden',
+                pointerEvents: 'none',
+                zIndex: 0
+            }}>
+                <Box sx={{
+                    position: 'absolute',
+                    top: '10%',
+                    right: '-5%',
+                    width: '600px',
+                    height: '600px',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(234, 43, 22, 0.18) 0%, rgba(255, 59, 38, 0.05) 50%, transparent 70%)',
+                    filter: 'blur(60px)'
+                }} />
+                <Box sx={{
+                    position: 'absolute',
+                    bottom: '-10%',
+                    left: '-5%',
+                    width: '500px',
+                    height: '500px',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%)',
+                    filter: 'blur(50px)'
+                }} />
+            </Box>
 
-                {/* ── Left Nav ── */}
-                <nav className='interview-nav'>
-                    <div className="nav-content">
-                        <p className='interview-nav__label'>Sections</p>
+            {/* Sticky glassmorphic navbar */}
+            <Navbar maxWidth="1100px" marginBottom="2rem" />
+
+            {/* Layout Box */}
+            <Box sx={layoutContainerStyle}>
+
+                {/* ── Left Navigation ── */}
+                <Box sx={navPanelStyle}>
+                    <Box>
+                        <Typography sx={navLabelStyle}>Sections</Typography>
                         {NAV_ITEMS.map(item => (
-                            <button
+                            <Button
                                 key={item.id}
-                                className={`interview-nav__item ${activeNav === item.id ? 'interview-nav__item--active' : ''}`}
                                 onClick={() => setActiveNav(item.id)}
+                                sx={navButtonStyle(activeNav === item.id)}
                             >
-                                <span className='interview-nav__icon'>{item.icon}</span>
-                                {item.label}
-                            </button>
+                                {item.icon}
+                                <Box component="span" sx={{ marginLeft: '0.5rem' }}>{item.label}</Box>
+                            </Button>
                         ))}
-                    </div>
-                    <button
-                        onClick={() => { getResumePdf(interviewId) }}
-                        className='button primary-button' >
-                        <svg height={"0.8rem"} style={{ marginRight: "0.8rem" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10.6144 17.7956 11.492 15.7854C12.2731 13.9966 13.6789 12.5726 15.4325 11.7942L17.8482 10.7219C18.6162 10.381 18.6162 9.26368 17.8482 8.92277L15.5079 7.88394C13.7092 7.08552 12.2782 5.60881 11.5105 3.75894L10.6215 1.61673C10.2916.821765 9.19319.821767 8.8633 1.61673L7.97427 3.75892C7.20657 5.60881 5.77553 7.08552 3.97685 7.88394L1.63658 8.92277C.868537 9.26368.868536 10.381 1.63658 10.7219L4.0523 11.7942C5.80589 12.5726 7.21171 13.9966 7.99275 15.7854L8.8704 17.7956C9.20776 18.5682 10.277 18.5682 10.6144 17.7956ZM19.4014 22.6899 19.6482 22.1242C20.0882 21.1156 20.8807 20.3125 21.8695 19.8732L22.6299 19.5353C23.0412 19.3526 23.0412 18.7549 22.6299 18.5722L21.9121 18.2532C20.8978 17.8026 20.0911 16.9698 19.6586 15.9269L19.4052 15.3156C19.2285 14.8896 18.6395 14.8896 18.4628 15.3156L18.2094 15.9269C17.777 16.9698 16.9703 17.8026 15.956 18.2532L15.2381 18.5722C14.8269 18.7549 14.8269 19.3526 15.2381 19.5353L15.9985 19.8732C16.9874 20.3125 17.7798 21.1156 18.2198 22.1242L18.4667 22.6899C18.6473 23.104 19.2207 23.104 19.4014 22.6899Z"></path></svg>
-                        Download Resume
-                    </button>
-                </nav>
+                    </Box>
 
-                <div className='interview-divider' />
+                    <Button
+                        onClick={() => getResumePdf(interviewId)}
+                        sx={downloadButtonStyle}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '0.25rem' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                        Download Resume
+                    </Button>
+                </Box>
 
                 {/* ── Center Content ── */}
-                <main className='interview-content'>
+                <Box sx={contentPanelStyle}>
                     {activeNav === 'technical' && (
-                        <section>
-                            <div className='content-header'>
-                                <h2>Technical Questions</h2>
-                                <span className='content-header__count'>{report.technicalQuestions.length} questions</span>
-                            </div>
-                            <div className='q-list'>
+                        <Box>
+                            <Box sx={contentHeaderStyle}>
+                                <Typography component="h2" sx={panelTitleStyle}>
+                                    Technical Questions
+                                </Typography>
+                                <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                    {report.technicalQuestions.length} questions
+                                </Typography>
+                            </Box>
+                            <Box>
                                 {report.technicalQuestions.map((q, i) => (
                                     <QuestionCard key={i} item={q} index={i} />
                                 ))}
-                            </div>
-                        </section>
+                            </Box>
+                        </Box>
                     )}
 
                     {activeNav === 'behavioral' && (
-                        <section>
-                            <div className='content-header'>
-                                <h2>Behavioral Questions</h2>
-                                <span className='content-header__count'>{report.behavioralQuestions.length} questions</span>
-                            </div>
-                            <div className='q-list'>
+                        <Box>
+                            <Box sx={contentHeaderStyle}>
+                                <Typography component="h2" sx={panelTitleStyle}>
+                                    Behavioral Questions
+                                </Typography>
+                                <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                    {report.behavioralQuestions.length} questions
+                                </Typography>
+                            </Box>
+                            <Box>
                                 {report.behavioralQuestions.map((q, i) => (
                                     <QuestionCard key={i} item={q} index={i} />
                                 ))}
-                            </div>
-                        </section>
+                            </Box>
+                        </Box>
                     )}
 
                     {activeNav === 'roadmap' && (
-                        <section>
-                            <div className='content-header'>
-                                <h2>Preparation Road Map</h2>
-                                <span className='content-header__count'>{report.preparationPlan.length}-day plan</span>
-                            </div>
-                            <div className='roadmap-list'>
+                        <Box>
+                            <Box sx={contentHeaderStyle}>
+                                <Typography component="h2" sx={panelTitleStyle}>
+                                    Preparation Roadmap
+                                </Typography>
+                                <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                    {report.preparationPlan.length}-day plan
+                                </Typography>
+                            </Box>
+                            <Box>
                                 {report.preparationPlan.map((day) => (
                                     <RoadMapDay key={day.day} day={day} />
                                 ))}
-                            </div>
-                        </section>
+                            </Box>
+                        </Box>
                     )}
-                </main>
-
-                <div className='interview-divider' />
+                </Box>
 
                 {/* ── Right Sidebar ── */}
-                <aside className='interview-sidebar'>
-
+                <Box sx={rightPanelStyle}>
                     {/* Match Score */}
-                    <div className='match-score'>
-                        <p className='match-score__label'>Match Score</p>
-                        <div className={`match-score__ring ${scoreColor}`}>
-                            <span className='match-score__value'>{report.matchScore}</span>
-                            <span className='match-score__pct'>%</span>
-                        </div>
-                        <p className='match-score__sub'>Strong match for this role</p>
-                    </div>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Match Score
+                        </Typography>
+                        <Box sx={scoreCircleStyle}>
+                            <Typography sx={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-title)', lineHeight: 1 }}>
+                                {report.matchScore}
+                            </Typography>
+                            <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase' }}>
+                                percent
+                            </Typography>
+                        </Box>
+                        <Typography sx={{ fontSize: '0.8rem', color: '#ea2b16', fontWeight: 600, marginTop: '0.5rem' }}>
+                            Strong match for this role
+                        </Typography>
+                    </Box>
 
-                    <div className='sidebar-divider' />
+                    <Box sx={{ width: '100%', height: '1px', backgroundColor: 'var(--divider-color)' }} />
 
                     {/* Skill Gaps */}
-                    <div className='skill-gaps'>
-                        <p className='skill-gaps__label'>Skill Gaps</p>
-                        <div className='skill-gaps__list'>
+                    <Box sx={{ width: '100%' }}>
+                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', display: 'block' }}>
+                            Skill Gaps
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                             {report.skillGaps.map((gap, i) => (
-                                <span key={i} className={`skill-tag skill-tag--${gap.severity}`}>
+                                <Box component="span" key={i} sx={skillTagStyle(gap.severity)}>
                                     {gap.skill}
-                                </span>
+                                </Box>
                             ))}
-                        </div>
-                    </div>
+                        </Box>
+                    </Box>
+                </Box>
 
-                </aside>
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 }
 

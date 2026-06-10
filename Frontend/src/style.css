@@ -1,0 +1,101 @@
+:root {
+  --bg-gradient: radial-gradient(circle at 80% 30%, rgba(234, 43, 22, 0.10) 0%, rgba(255, 59, 38, 0.04) 30%, transparent 65%), radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.9) 0%, transparent 50%), #f1f5f9;
+  --bg-color: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-title: #0f172a;
+  --card-bg: #ffffff;
+  --card-border: rgba(234, 43, 22, 0.08);
+  --input-bg: #f8fafc;
+  --input-border: rgba(15, 23, 42, 0.08);
+  --navbar-bg: rgba(255, 255, 255, 0.9);
+  --navbar-border: rgba(234, 43, 22, 0.08);
+  --navbar-container-bg: linear-gradient(to bottom, #f1f5f9 70%, rgba(241, 245, 249, 0) 100%);
+  --btn-bg: #0f172a;
+  --btn-text: #ffffff;
+  --btn-border: rgba(15, 23, 42, 0.08);
+  --btn-hover-bg: rgba(15, 23, 42, 0.03);
+  --btn-hover-border: #0f172a;
+  
+  --divider-color: rgba(15, 23, 42, 0.06);
+  --card-shadow: 0 20px 40px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.02);
+  --glowing-bg-circle-1: radial-gradient(circle, rgba(234, 43, 22, 0.15) 0%, rgba(255, 59, 38, 0.04) 50%, transparent 70%);
+  --glowing-bg-circle-2: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, transparent 70%);
+  --qcard-bg: rgba(255, 255, 255, 0.9);
+  --qcard-body-bg: rgba(0, 0, 0, 0.005);
+  --sidebar-score-bg: #ffffff;
+  
+  --highlight-color: #ea2b16;
+  --highlight-gradient: linear-gradient(135deg, #ea2b16 0%, #ff5c47 100%);
+}
+
+[data-theme='dark'] {
+  --bg-gradient: radial-gradient(circle at 80% 30%, rgba(234, 43, 22, 0.15) 0%, rgba(255, 59, 38, 0.04) 30%, transparent 65%), radial-gradient(circle at 20% 80%, rgba(15, 23, 42, 0.4) 0%, transparent 50%), #0b0f19;
+  --bg-color: #0b0f19;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-title: #f8fafc;
+  --card-bg: rgba(22, 30, 49, 0.75);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --input-bg: rgba(13, 18, 30, 0.85);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --navbar-bg: rgba(22, 30, 49, 0.85);
+  --navbar-border: rgba(255, 255, 255, 0.08);
+  --navbar-container-bg: linear-gradient(to bottom, #0b0f19 70%, rgba(11, 15, 25, 0) 100%);
+  --btn-bg: #f8fafc;
+  --btn-text: #0b0f19;
+  --btn-border: rgba(255, 255, 255, 0.1);
+  --btn-hover-bg: rgba(255, 255, 255, 0.05);
+  --btn-hover-border: #f8fafc;
+  
+  --divider-color: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.15);
+  --glowing-bg-circle-1: radial-gradient(circle, rgba(234, 43, 22, 0.15) 0%, rgba(255, 59, 38, 0.03) 50%, transparent 70%);
+  --glowing-bg-circle-2: radial-gradient(circle, rgba(13, 18, 30, 0.8) 0%, transparent 70%);
+  --qcard-bg: rgba(22, 30, 49, 0.45);
+  --qcard-body-bg: rgba(255, 255, 255, 0.02);
+  --sidebar-score-bg: #161e31;
+  
+  --highlight-color: #ff5c47;
+  --highlight-gradient: linear-gradient(135deg, #ea2b16 0%, #ff5c47 100%);
+}
+
+* {
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.highlight {
+    color: var(--highlight-color);
+}
+
+/* Button styles (merged from button.scss) */
+.button {
+    border: none;
+    outline: none;
+    padding-inline: 1.5rem;
+    padding-block: 0.75rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.button.primary-button {
+    background-color: #e1034d;
+    color: white;
+}
+
+.button:active {
+    transform: scale(0.9);
+}

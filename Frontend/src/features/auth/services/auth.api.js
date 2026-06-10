@@ -2,7 +2,7 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:5001",
     withCredentials: true
 })
 
@@ -16,9 +16,8 @@ export async function register({ username, email, password }) {
         return response.data
 
     } catch (err) {
-
         console.log(err)
-
+        throw err
     }
 
 }
@@ -35,6 +34,7 @@ export async function login({ email, password }) {
 
     } catch (err) {
         console.log(err)
+        throw err
     }
 
 }
@@ -47,7 +47,8 @@ export async function logout() {
         return response.data
 
     } catch (err) {
-
+        console.log(err)
+        throw err
     }
 }
 
@@ -61,6 +62,7 @@ export async function getMe() {
 
     } catch (err) {
         console.log(err)
+        throw err
     }
 
 }

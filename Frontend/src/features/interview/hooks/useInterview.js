@@ -2,12 +2,14 @@ import { getAllInterviewReports, generateInterviewReport, getInterviewReportById
 import { useContext, useEffect } from "react"
 import { InterviewContext } from "../interview.context"
 import { useParams } from "react-router"
+import { useSnackbar } from "../../../snackbar.context"
 
 
 export const useInterview = () => {
 
     const context = useContext(InterviewContext)
     const { interviewId } = useParams()
+    const { showSnackbar } = useSnackbar()
 
     if (!context) {
         throw new Error("useInterview must be used within an InterviewProvider")
@@ -17,62 +19,68 @@ export const useInterview = () => {
 
     const generateReport = async ({ jobDescription, selfDescription, resumeFile }) => {
         setLoading(true)
-        let response = null
         try {
-            response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile })
+            const response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile })
             setReport(response.interviewReport)
+            return response.interviewReport
         } catch (error) {
             console.log(error)
+            const errMsg = error.response?.data?.message || error.message || "Failed to generate report."
+            showSnackbar(errMsg, "error")
+            return null
         } finally {
             setLoading(false)
         }
-
-        return response.interviewReport
     }
 
     const getReportById = async (interviewId) => {
         setLoading(true)
-        let response = null
         try {
-            response = await getInterviewReportById(interviewId)
+            const response = await getInterviewReportById(interviewId)
             setReport(response.interviewReport)
+            return response.interviewReport
         } catch (error) {
             console.log(error)
+            const errMsg = error.response?.data?.message || error.message || "Failed to fetch report."
+            showSnackbar(errMsg, "error")
+            return null
         } finally {
             setLoading(false)
         }
-        return response.interviewReport
     }
 
     const getReports = async () => {
         setLoading(true)
-        let response = null
         try {
-            response = await getAllInterviewReports()
+            const response = await getAllInterviewReports()
             setReports(response.interviewReports)
+            return response.interviewReports
         } catch (error) {
             console.log(error)
+            const errMsg = error.response?.data?.message || error.message || "Failed to fetch reports."
+            showSnackbar(errMsg, "error")
+            return []
         } finally {
             setLoading(false)
         }
-
-        return response.interviewReports
     }
 
     const getResumePdf = async (interviewReportId) => {
         setLoading(true)
-        let response = null
         try {
-            response = await generateResumePdf({ interviewReportId })
+            const response = await generateResumePdf({ interviewReportId })
             const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }))
             const link = document.createElement("a")
             link.href = url
             link.setAttribute("download", `resume_${interviewReportId}.pdf`)
             document.body.appendChild(link)
             link.click()
+            showSnackbar("Resume PDF downloaded successfully!", "success")
         }
         catch (error) {
             console.log(error)
+            const errMsg = error.response?.data?.message || error.message || "Failed to download resume PDF."
+            showSnackbar(errMsg, "error")
         } finally {
             setLoading(false)
         }
