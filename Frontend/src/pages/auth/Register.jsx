@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 import { Box, Typography, Button } from '@mui/material'
-import Loader from '../../../components/Loader.jsx'
+import Loader from '../../components/Loader.jsx'
 
 const Register = () => {
 
@@ -60,9 +60,9 @@ const Register = () => {
 
     const badgeStyle = {
         background: 'var(--card-bg)',
-        border: '1px solid rgba(234, 43, 22, 0.25)',
+        border: '1px solid rgba(69, 208, 157, 0.25)',
         borderRadius: '30px',
-        color: '#ea2b16',
+        color: 'var(--highlight-color)',
         fontSize: '0.75rem',
         fontWeight: '700',
         padding: '0.35rem 1.25rem',
@@ -70,7 +70,7 @@ const Register = () => {
         letterSpacing: '0.05em',
         display: 'inline-block',
         marginBottom: '1.25rem',
-        boxShadow: '0 4px 10px rgba(234, 43, 22, 0.05)',
+        boxShadow: '0 4px 10px rgba(69, 208, 157, 0.05)',
         transition: 'all 0.3s ease'
     }
 
@@ -121,8 +121,8 @@ const Register = () => {
         boxSizing: 'border-box',
         transition: 'all 0.3s ease',
         '&:focus': {
-            borderColor: '#ea2b16',
-            boxShadow: '0 0 10px rgba(234, 43, 22, 0.15)'
+            borderColor: 'var(--highlight-color)',
+            boxShadow: '0 0 10px rgba(69, 208, 157, 0.15)'
         }
     }
 
@@ -157,7 +157,7 @@ const Register = () => {
     }
 
     const linkStyle = {
-        color: '#ea2b16',
+        color: 'var(--highlight-color)',
         textDecoration: 'none',
         fontWeight: '600'
     }

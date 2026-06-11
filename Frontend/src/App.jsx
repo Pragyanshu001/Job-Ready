@@ -1,9 +1,9 @@
 import { RouterProvider } from "react-router"
 import { router } from "./app.routes.jsx"
-import { AuthProvider } from "./features/auth/auth.context.jsx"
-import { InterviewProvider } from "./features/interview/interview.context.jsx"
-import { ThemeProvider } from "./theme.context.jsx"
-import { SnackbarProvider } from "./snackbar.context.jsx"
+import { AuthProvider } from "./context/auth.context.jsx"
+import { InterviewProvider } from "./context/interview.context.jsx"
+import { ThemeProvider } from "./context/theme.context.jsx"
+import { SnackbarProvider } from "./context/snackbar.context.jsx"
 
 function App() {
   return (

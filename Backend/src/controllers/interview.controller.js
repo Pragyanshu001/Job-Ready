@@ -111,4 +111,60 @@ async function generateResumePdfController(req, res) {
     }
 }
 
-module.exports = { generateInterViewReportController, getInterviewReportByIdController, getAllInterviewReportsController, generateResumePdfController }
+/**
+ * @description Controller to handle call ended webhooks from Vapi.
+ */
+async function handleVapiWebhook(req, res) {
+    try {
+        const { interviewId, mode } = req.query
+        const payload = req.body
+
+        // Vapi webhook is called for multiple events, we listen for "end-of-call-report"
+        const messageType = payload.message?.type
+
+        if (messageType === "end-of-call-report") {
+            const callData = payload.message.call
+            const sessionId = callData?.id || payload.message.callId
+            const transcript = callData?.transcript || payload.message.transcript || ""
+            const summary = callData?.summary || payload.message.summary || ""
+            const duration = callData?.duration || 0
+            const recordingUrl = callData?.recordingUrl || ""
+
+            if (!interviewId) {
+                return res.status(400).json({ message: "interviewId query param is required" })
+            }
+
+            const interviewReport = await interviewReportModel.findById(interviewId)
+            if (!interviewReport) {
+                return res.status(404).json({ message: "Interview report not found" })
+            }
+
+            interviewReport.voiceSessions.push({
+                sessionId,
+                transcript,
+                summary,
+                duration,
+                recordingUrl,
+                mode: mode || "interview"
+            })
+
+            await interviewReport.save()
+            console.log(`Saved Vapi voice session for report ${interviewId}`)
+        }
+
+        res.status(200).json({ received: true })
+    } catch (err) {
+        console.error("Error in handleVapiWebhook:", err)
+        res.status(500).json({
+            message: err.message || "Failed to process Vapi webhook"
+        })
+    }
+}
+
+module.exports = {
+    generateInterViewReportController,
+    getInterviewReportByIdController,
+    getAllInterviewReportsController,
+    generateResumePdfController,
+    handleVapiWebhook
+}

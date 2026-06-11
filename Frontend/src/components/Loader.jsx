@@ -16,7 +16,7 @@ const Loader = ({ message = 'Loading...', subtitle }) => {
                 <div style={{
                     width: '50px',
                     height: '50px',
-                    border: '4px solid #ea2b16',
+                    border: '4px solid var(--highlight-color)',
                     borderTop: '4px solid transparent',
                     borderRadius: '50%',
                     margin: '0 auto 1.5rem auto',

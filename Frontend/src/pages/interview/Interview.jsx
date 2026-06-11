@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { useInterview } from '../hooks/useInterview.js'
+import { useInterview } from '../../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
 import { Box, Typography, Button } from '@mui/material'
-import Navbar from '../../../components/Navbar.jsx'
-import Loader from '../../../components/Loader.jsx'
+import Navbar from '../../components/Navbar.jsx'
+import Loader from '../../components/Loader.jsx'
+import VoicePractice from '../../components/VoicePractice.jsx'
+import { Code, MessageSquare, Compass, Mic, ChevronDown, Download } from 'lucide-react'
 
 const NAV_ITEMS = [
-    { id: 'technical', label: 'Technical Questions', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>) },
-    { id: 'behavioral', label: 'Behavioral Questions', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>) },
-    { id: 'roadmap', label: 'Road Map', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>) },
+    { id: 'technical', label: 'Technical Questions', icon: <Code size={16} /> },
+    { id: 'behavioral', label: 'Behavioral Questions', icon: <MessageSquare size={16} /> },
+    { id: 'roadmap', label: 'Road Map', icon: <Compass size={16} /> },
+    { id: 'voice-practice', label: 'Voice AI Practice 🎙️', icon: <Mic size={16} strokeWidth={2.5} /> },
 ]
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -39,9 +42,9 @@ const QuestionCard = ({ item, index }) => {
     }
 
     const indexBadgeStyle = {
-        background: 'rgba(234, 43, 22, 0.06)',
-        color: '#ea2b16',
-        border: '1px solid rgba(234, 43, 22, 0.25)',
+        background: 'rgba(69, 208, 157, 0.06)',
+        color: 'var(--highlight-color)',
+        border: '1px solid rgba(69, 208, 157, 0.25)',
         borderRadius: '30px',
         fontSize: '0.75rem',
         fontWeight: '700',
@@ -90,9 +93,9 @@ const QuestionCard = ({ item, index }) => {
         padding: '0.2rem 0.6rem',
         borderRadius: '20px',
         width: 'fit-content',
-        background: type === 'intention' ? 'rgba(13, 148, 136, 0.06)' : 'rgba(234, 43, 22, 0.06)',
-        border: `1px solid ${type === 'intention' ? 'rgba(13, 148, 136, 0.2)' : 'rgba(234, 43, 22, 0.2)'}`,
-        color: type === 'intention' ? '#0d9488' : '#ea2b16'
+        background: type === 'intention' ? 'rgba(13, 148, 136, 0.06)' : 'rgba(235, 118, 60, 0.06)',
+        border: `1px solid ${type === 'intention' ? 'rgba(13, 148, 136, 0.2)' : 'rgba(235, 118, 60, 0.2)'}`,
+        color: type === 'intention' ? '#0d9488' : '#EB763C'
     })
 
     const bodyTextStyle = {
@@ -109,7 +112,7 @@ const QuestionCard = ({ item, index }) => {
                 <Box component="span" sx={indexBadgeStyle}>Q{index + 1}</Box>
                 <Typography component="p" sx={questionTextStyle}>{item.question}</Typography>
                 <Box component="span" sx={chevronStyle}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                    <ChevronDown size={16} strokeWidth={2} />
                 </Box>
             </Box>
             {open && (
@@ -147,9 +150,9 @@ const RoadMapDay = ({ day }) => {
     }
 
     const badgeStyle = {
-        background: 'rgba(234, 43, 22, 0.06)',
-        border: '1px solid rgba(234, 43, 22, 0.25)',
-        color: '#ea2b16',
+        background: 'rgba(69, 208, 157, 0.06)',
+        border: '1px solid rgba(69, 208, 157, 0.25)',
+        color: 'var(--highlight-color)',
         fontSize: '0.75rem',
         fontWeight: '700',
         padding: '0.2rem 0.6rem',
@@ -189,7 +192,7 @@ const RoadMapDay = ({ day }) => {
         width: '6px',
         height: '6px',
         borderRadius: '50%',
-        background: '#ea2b16',
+        background: 'var(--highlight-color)',
         marginTop: '6px',
         flexShrink: 0
     }
@@ -316,9 +319,9 @@ const Interview = () => {
         alignItems: 'center',
         gap: '0.75rem',
         padding: '0.75rem 1rem',
-        background: isActive ? 'rgba(234, 43, 22, 0.06)' : 'none',
-        color: isActive ? '#ea2b16' : 'var(--text-secondary)',
-        border: isActive ? '1px solid rgba(234, 43, 22, 0.2)' : '1px solid transparent',
+        background: isActive ? 'rgba(69, 208, 157, 0.06)' : 'none',
+        color: isActive ? 'var(--highlight-color)' : 'var(--text-secondary)',
+        border: isActive ? '1px solid rgba(69, 208, 157, 0.2)' : '1px solid transparent',
         borderRadius: '30px',
         fontSize: '0.85rem',
         fontWeight: '600',
@@ -329,7 +332,7 @@ const Interview = () => {
         transition: 'all 0.3s ease',
         '&:hover': {
             background: 'var(--btn-hover-bg)',
-            color: '#ea2b16'
+            color: 'var(--highlight-color)'
         }
     })
 
@@ -479,7 +482,7 @@ const Interview = () => {
                         onClick={() => getResumePdf(interviewId)}
                         sx={downloadButtonStyle}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '0.25rem' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                        <Download size={16} strokeWidth={2.5} style={{ marginRight: '0.25rem' }} />
                         Download Resume
                     </Button>
                 </Box>
@@ -538,6 +541,13 @@ const Interview = () => {
                                 ))}
                             </Box>
                         </Box>
+                    )}
+
+                    {activeNav === 'voice-practice' && (
+                        <VoicePractice 
+                            report={report} 
+                            onRefresh={() => getReportById(interviewId)} 
+                        />
                     )}
                 </Box>
 

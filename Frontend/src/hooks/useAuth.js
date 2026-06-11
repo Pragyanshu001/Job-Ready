@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../auth.context";
+import { AuthContext } from "../context/auth.context";
 import { login, register, logout, getMe } from "../services/auth.api";
-import { useSnackbar } from "../../../snackbar.context";
+import { useSnackbar } from "../context/snackbar.context";
 
 export const useAuth = () => {
 

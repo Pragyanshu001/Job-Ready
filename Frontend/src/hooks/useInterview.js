@@ -1,8 +1,8 @@
 import { getAllInterviewReports, generateInterviewReport, getInterviewReportById, generateResumePdf } from "../services/interview.api"
 import { useContext, useEffect } from "react"
-import { InterviewContext } from "../interview.context"
+import { InterviewContext } from "../context/interview.context"
 import { useParams } from "react-router"
-import { useSnackbar } from "../../../snackbar.context"
+import { useSnackbar } from "../context/snackbar.context"
 
 
 export const useInterview = () => {

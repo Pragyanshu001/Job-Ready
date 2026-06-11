@@ -64,6 +64,36 @@ const preparationPlanSchema = new mongoose.Schema({
     } ]
 })
 
+const voiceSessionSchema = new mongoose.Schema({
+    sessionId: {
+        type: String,
+        required: true
+    },
+    transcript: {
+        type: String,
+        default: ""
+    },
+    summary: {
+        type: String,
+        default: ""
+    },
+    duration: {
+        type: Number,
+        default: 0
+    },
+    recordingUrl: {
+        type: String,
+        default: ""
+    },
+    mode: {
+        type: String,
+        enum: [ "interview", "revision" ],
+        required: true
+    }
+}, {
+    timestamps: true
+})
+
 const interviewReportSchema = new mongoose.Schema({
     jobDescription: {
         type: String,
@@ -84,6 +114,7 @@ const interviewReportSchema = new mongoose.Schema({
     behavioralQuestions: [ behavioralQuestionSchema ],
     skillGaps: [ skillGapSchema ],
     preparationPlan: [ preparationPlanSchema ],
+    voiceSessions: [ voiceSessionSchema ],
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"
