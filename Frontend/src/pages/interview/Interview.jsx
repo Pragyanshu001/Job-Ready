@@ -11,7 +11,7 @@ const NAV_ITEMS = [
     { id: 'technical', label: 'Technical Questions', icon: <Code size={16} /> },
     { id: 'behavioral', label: 'Behavioral Questions', icon: <MessageSquare size={16} /> },
     { id: 'roadmap', label: 'Road Map', icon: <Compass size={16} /> },
-    { id: 'voice-practice', label: 'Voice AI Practice 🎙️', icon: <Mic size={16} strokeWidth={2.5} /> },
+    { id: 'voice-practice', label: 'Voice AI Practice', icon: <Mic size={16} strokeWidth={2.5} /> },
 ]
 
 // ── Sub-components ────────────────────────────────────────────────────────────
