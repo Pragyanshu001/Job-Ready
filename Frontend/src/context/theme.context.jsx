@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 
 const ThemeContext = createContext();
 
@@ -25,9 +26,48 @@ export const ThemeProvider = ({ children }) => {
         setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
     };
 
+    // Create dynamic MUI theme based on the current active theme
+    const muiTheme = useMemo(() => {
+        return createTheme({
+            palette: {
+                mode: theme,
+                primary: {
+                    main: '#45D09D',
+                    contrastText: '#ffffff',
+                },
+                background: {
+                    default: theme === 'dark' ? '#0b0f19' : '#f1f5f9',
+                    paper: theme === 'dark' ? '#161e31' : '#ffffff',
+                },
+            },
+            typography: {
+                fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
+            },
+            components: {
+                MuiButton: {
+                    styleOverrides: {
+                        root: {
+                            textTransform: 'none',
+                            borderRadius: '8px',
+                        },
+                    },
+                },
+                MuiCard: {
+                    styleOverrides: {
+                        root: {
+                            borderRadius: '16px',
+                        },
+                    },
+                },
+            },
+        });
+    }, [theme]);
+
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>
-            {children}
+            <MuiThemeProvider theme={muiTheme}>
+                {children}
+            </MuiThemeProvider>
         </ThemeContext.Provider>
     );
 };
